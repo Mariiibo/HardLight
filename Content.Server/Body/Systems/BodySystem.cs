@@ -73,8 +73,7 @@ public sealed class BodySystem : SharedBodySystem
         // TODO: Predict this probably.
         base.AddPart(bodyEnt, partEnt, slotId);
 
-        var layer = partEnt.Comp.ToHumanoidLayers();
-        if (layer != null)
+        if (TryComp<HumanoidAppearanceComponent>(bodyEnt, out var humanoid))
         {
             var layer = partEnt.Comp.ToHumanoidLayers();
             if (layer != null)
