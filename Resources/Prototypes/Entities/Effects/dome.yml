@@ -177,4 +177,5 @@
   - type: DamageContacts #Damages others around you, but you as well. Better have healing
     damage:
       types:
-        Caustic: 3
+        Slash: 1.5
+        Piercing: 1.5
