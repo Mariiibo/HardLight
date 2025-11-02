@@ -249,13 +249,19 @@ namespace Content.Server.Zombies
                 {
                     if (!HasComp<ZombieImmuneComponent>(entity) && !HasComp<NonSpreaderZombieComponent>(args.User) && _random.Prob(GetZombieInfectionChance(entity, component)))
                     {
-                        EnsureComp<PendingZombieComponent>(entity);
+                        EnsureComp<PendingZombieComponent>(entity, out PendingZombieComponent pending);
+                        pending.Infector = args.User;
+                        Dirty(entity, pending);
                         EnsureComp<ZombifyOnDeathComponent>(entity);
                     }
                 }
 
                 if (_mobState.IsIncapacitated(entity, mobState) && !HasComp<ZombieComponent>(entity) && !HasComp<ZombieImmuneComponent>(entity))
                 {
+                    // Track the infector for reward purposes before conversion
+                    EnsureComp<PendingZombieComponent>(entity, out PendingZombieComponent pending);
+                    pending.Infector = args.User;
+                    Dirty(entity, pending);
                     ZombifyEntity(entity);
                     args.BonusDamage = -args.BaseDamage;
                 }

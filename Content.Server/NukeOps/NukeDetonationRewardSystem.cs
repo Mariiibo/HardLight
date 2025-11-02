@@ -22,7 +22,7 @@ public sealed class NukeDetonationRewardSystem : EntitySystem
     [Dependency] private readonly IAdminLogManager _adminLog = default!;
 
     // TODO: Make configurable via CVars or a prototype if needed.
-    private const int RewardAmount = 100000;
+    private const int RewardAmount = 2500000;
 
     public override void Initialize()
     {
