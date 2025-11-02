@@ -19,6 +19,10 @@
     icon:
       sprite: Structures/Specific/carp_rift.rsi
       state: icon_blue
+  - type: ObjectiveReward
+    # Pay the dragon for creating the required three rifts
+    amount: 2500
+    popupMessage: "You completed your Dragon objective: Carp Rifts. Paid $2,500."
   - type: NumberObjective
     # dragon can only spawn 3 rifts so keep objective the same
     min: 3
@@ -37,3 +41,7 @@
     icon:
       sprite: Mobs/Aliens/Carps/dragon.rsi
       state: alive
+  - type: ObjectiveReward
+    # Reward for surviving the round as the dragon
+    amount: 1500
+    popupMessage: "You survived as the Dragon. Paid $1,500."
