@@ -103,21 +103,20 @@ public sealed partial class SpaceArtillerySystem : EntitySystem
             return;
         }
 
-        var worldPosX = _xform.GetWorldPosition(uid).X;
-        var worldPosY = _xform.GetWorldPosition(uid).Y;
-        var worldRot = _xform.GetWorldRotation(uid) + Math.PI;
-        var targetSpot = new Vector2(worldPosX - DISTANCE * (float)Math.Sin(worldRot), worldPosY + DISTANCE * (float)Math.Cos(worldRot));
+    var worldPosX = _xform.GetWorldPosition(uid).X;
+    var worldPosY = _xform.GetWorldPosition(uid).Y;
+    var worldRot = (float)_xform.GetWorldRotation(uid).Theta + MathF.PI;
+    var targetSpot = new Vector2(worldPosX - DISTANCE * MathF.Sin(worldRot), worldPosY + DISTANCE * MathF.Cos(worldRot));
 
-        EntityCoordinates targetCordinates;
-        targetCordinates = new EntityCoordinates(xform.MapUid!.Value, targetSpot);
+    var targetCoordinates = new EntityCoordinates(xform.MapUid!.Value, targetSpot);
 
         // We need to set the ShootCoordinates for the gun component
         // This is important to ensure it uses the proper calculations in SharedGunSystem
-        gun.ShootCoordinates = targetCoordinates;
+    gun.ShootCoordinates = targetCoordinates;
 
         // Call AttemptShoot with the correct signature that includes target coordinates
         // This will eventually call GunSystem.Shoot which correctly handles grid velocity
-        _gun.AttemptShoot(uid, gunUid, gun, targetCoordinates);
+    _gun.AttemptShoot(uid, gunUid, gun, targetCoordinates);
     }
 
     private void OnShotEvent(EntityUid uid, SpaceArtilleryComponent component, AmmoShotEvent args)

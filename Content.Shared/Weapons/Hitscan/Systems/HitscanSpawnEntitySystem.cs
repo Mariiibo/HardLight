@@ -5,7 +5,8 @@
 using Content.Shared.Damage;
 using Content.Shared.Explosion.EntitySystems;
 using Content.Shared.Weapons.Hitscan.Components;
-using Content.Shared.Weapons.Hitscan.Events;
+using Content.Shared.Weapons.Ranged.Events;
+using Content.Shared.Weapons.Reflect;
 using Robust.Shared.Network;
 
 namespace Content.Shared.Weapons.Hitscan.Systems;
@@ -19,7 +20,9 @@ public sealed class HitscanSpawnEntitySystem : EntitySystem
     {
         base.Initialize();
 
-        SubscribeLocalEvent<HitscanSpawnEntityComponent, HitscanRaycastFiredEvent>(OnHitscanHit, after: [ typeof(HitscanReflectSystem) ]);
+        SubscribeLocalEvent<HitscanSpawnEntityComponent, HitscanRaycastFiredEvent>(
+            OnHitscanHit,
+            after: new[] { typeof(ReflectSystem) });
     }
 
     private void OnHitscanHit(Entity<HitscanSpawnEntityComponent> ent, ref HitscanRaycastFiredEvent args)

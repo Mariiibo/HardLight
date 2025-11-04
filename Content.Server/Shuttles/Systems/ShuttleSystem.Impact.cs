@@ -24,6 +24,8 @@ public sealed partial class ShuttleSystem
     /// Minimum velocity difference between 2 bodies for a shuttle "impact" to occur.
     /// </summary>
     private const int MinimumImpactVelocity = 10;
+    private const float TileBreakEnergy = 50f;
+    private const float SparkEnergy = 30f;
 
     private readonly SoundCollectionSpecifier _shuttleImpactSound = new("ShuttleImpactSound");
 
@@ -210,7 +212,7 @@ public sealed partial class ShuttleSystem
 
                 // Only break tiles if they have enough energy
                 if (tileEnergy > TileBreakEnergy)
-                    _mapSys.SetTile(new Entity<MapGridComponent>(uid, grid), tile, Tile.Empty);
+                    _mapSystem.SetTile(new Entity<MapGridComponent>(uid, grid), tile, Tile.Empty);
 
                 // Spawn sparks with probability based on energy
                 if (tileEnergy > SparkEnergy && distanceFactor > 0.7f)

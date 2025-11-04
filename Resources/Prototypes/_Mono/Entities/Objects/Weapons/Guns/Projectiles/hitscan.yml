@@ -4,6 +4,11 @@
 # SPDX-License-Identifier: MPL-2.0
 
 - type: entity
+  id: BasicHitscan
+  abstract: true
+  categories: [ HideSpawnMenu ]
+
+- type: entity
   id: PulsedPlasma
   parent: BasicHitscan
   categories: [ HideSpawnMenu ]

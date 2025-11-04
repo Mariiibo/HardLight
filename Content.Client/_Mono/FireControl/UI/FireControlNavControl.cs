@@ -59,6 +59,8 @@ public sealed class FireControlNavControl : BaseShuttleControl
     private Vector2 _lastMousePos;
     private float _lastFireTime;
     private const float FireRateLimit = 0.1f;
+    private float _lastCursorUpdateTime;
+    private const float CursorUpdateInterval = 0.05f;
 
     public Action<EntityCoordinates>? OnRadarClick;
     public bool ShowIFF { get; set; } = true;
@@ -387,6 +389,11 @@ public sealed class FireControlNavControl : BaseShuttleControl
 
         ClearShader(handle);
         #endregion
+    }
+
+    private void ClearShader(DrawingHandleScreen handle)
+    {
+        // No-op placeholder to maintain compatibility with previous shader clearing behavior.
     }
 
     public void UpdateControllables(EntityUid console, FireControllableEntry[] controllables)

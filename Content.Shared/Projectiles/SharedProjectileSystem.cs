@@ -6,6 +6,8 @@ using Content.Shared.Hands.EntitySystems;
 using Content.Shared.Interaction;
 using Content.Shared.Mobs.Components;
 using Content.Shared.Throwing;
+using Content.Shared.Tag;
+using Content.Shared.Weapons.Ranged.Components;
 using Robust.Shared.Audio.Systems;
 using Robust.Shared.Map;
 using Robust.Shared.Network;
@@ -29,6 +31,7 @@ public abstract partial class SharedProjectileSystem : EntitySystem
     [Dependency] private readonly SharedHandsSystem _hands = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
     [Dependency] private readonly SharedTransformSystem _transform = default!;
+    [Dependency] private readonly TagSystem _tag = default!;
 
     public override void Initialize()
     {
@@ -223,12 +226,9 @@ public abstract partial class SharedProjectileSystem : EntitySystem
             return;
         }
 
-        // Define the tag constant
-        const string GunCanAimShooterTag = "GunCanAimShooter";
-
         if ((component.Shooter == args.OtherEntity || component.Weapon == args.OtherEntity) &&
-            component.Weapon != null && _tag.HasTag(component.Weapon.Value, GunCanAimShooterTag) &&
-            TryComp(uid, out TargetedProjectileComponent? targeted) && targeted.Target == args.OtherEntity)
+            component.Weapon != null && _tag.HasTag(component.Weapon.Value, "GunCanAimShooter") &&
+            TryComp<TargetedProjectileComponent>(uid, out var targeted) && targeted.Target == args.OtherEntity)
             return;
     }
 

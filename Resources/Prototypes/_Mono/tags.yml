@@ -189,19 +189,20 @@
 
 #8x65mm SKR tags
 
-- type: Tag
-  id: Cartridge8x65mmSKR
+## Removed duplicates; these tags are defined in base tags.yml
+# - type: Tag
+#   id: Cartridge8x65mmSKR
 
-- type: Tag
-  id: Magazine8x65mmSKR
+# - type: Tag
+#   id: Magazine8x65mmSKR
 
 - type: Tag
   id: MagazineBox8x65mmSKR
 
 #12 gauge tags
 
-- type: Tag
-  id: Magazine12_gaugeBuckshot
+# - type: Tag
+#   id: Magazine12_gaugeBuckshot
 
 - type: Tag
   id: ShellShotgun12_gaugeBuckshot

@@ -19,6 +19,9 @@
 - type: technology
   id: UniversalSubnuclearRailgunAmmo
   name: research-technology-universal-railgun-ammo-subnuclear
+  icon:
+    sprite: _Mono/Objects/Weapons/Guns/Ammunition/Explosives/charonslug.rsi
+    state: subnuclear
   entityIcon: CharonSubnuclearSlugAmmo
   discipline: FactionUniversal
   tier: 3

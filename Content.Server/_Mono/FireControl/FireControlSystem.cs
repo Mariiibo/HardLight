@@ -27,6 +27,7 @@ using Robust.Shared.Timing;
 using Content.Shared.Interaction;
 using Content.Shared._Mono.ShipGuns;
 using Content.Shared.Examine;
+using Robust.Server.GameObjects;
 
 namespace Content.Server._Mono.FireControl;
 
@@ -35,6 +36,7 @@ public sealed partial class FireControlSystem : EntitySystem
     [Dependency] private readonly SharedTransformSystem _xform = default!;
     [Dependency] private readonly GunSystem _gun = default!;
     [Dependency] private readonly SharedPhysicsSystem _physics = default!;
+    [Dependency] private readonly RotateToFaceSystem _rotateToFace = default!;
 
     public override void Initialize()
     {
@@ -266,15 +268,19 @@ public sealed partial class FireControlSystem : EntitySystem
             if (!TryComp<GunComponent>(localWeapon, out var gun))
                 continue;
 
-            if (TryComp<TransformComponent>(localWeapon, out var weaponXform))
-            {
-                var currentMapCoords = _xform.GetMapCoordinates(localWeapon, weaponXform);
-                var destinationMapCoords = targetCoords.ToMap(EntityManager, _xform);
+            // Get transform once and reuse
+            if (!TryComp<TransformComponent>(localWeapon, out var weaponXform))
+                continue;
 
-                if (destinationMapCoords.MapId == currentMapCoords.MapId && currentMapCoords.MapId != MapId.Nullspace)
+            // Rotate weapon towards target if applicable and within same map
+            var currentMapCoords = _xform.GetMapCoordinates(localWeapon, weaponXform);
+            var destinationMapCoords = targetCoords.ToMap(EntityManager, _xform);
+
+            if (destinationMapCoords.MapId == currentMapCoords.MapId && currentMapCoords.MapId != MapId.Nullspace)
+            {
+                var diff = destinationMapCoords.Position - currentMapCoords.Position;
+                if (TryComp<FireControlRotateComponent>(localWeapon, out var _))
                 {
-                    var diff = destinationMapCoords.Position - currentMapCoords.Position;
-                    if (TryComp<FireControlRotateComponent>(localWeapon, out var rotateEnabled))
                     if (diff.LengthSquared() > 0.01f)
                     {
                         // Only rotate the gun if it has line of sight to the target
@@ -287,14 +293,11 @@ public sealed partial class FireControlSystem : EntitySystem
                 }
             }
 
-            var weaponX = Transform(localWeapon);
             var targetPos = targetCoords.ToMap(EntityManager, _xform);
-
             if (targetPos.MapId != weaponXform.MapID)
                 continue;
 
             var weaponPos = _xform.GetWorldPosition(weaponXform);
-
             var direction = (targetPos.Position - weaponPos);
             var distance = direction.Length();
             if (distance <= 0)
@@ -310,6 +313,19 @@ public sealed partial class FireControlSystem : EntitySystem
                 _gun.AttemptShoot(localWeapon, localWeapon, gun, targetCoords);
             }
         }
+    }
+
+    private bool HasLineOfSight(EntityUid shooter, Vector2 from, Vector2 to, MapId mapId)
+    {
+        var diff = to - from;
+        var distance = diff.Length();
+        if (distance <= 0f)
+            return false;
+
+        var direction = Vector2.Normalize(diff);
+        var ray = new CollisionRay(from, direction, collisionMask: (int)(CollisionGroup.Opaque | CollisionGroup.Impassable));
+        var hits = _physics.IntersectRay(mapId, ray, distance, shooter, false);
+        return !hits.Any();
     }
 }
 

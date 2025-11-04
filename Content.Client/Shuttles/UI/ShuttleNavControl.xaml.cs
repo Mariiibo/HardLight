@@ -41,6 +41,8 @@ using Robust.Shared.Prototypes;
 using System.Linq;
 using Content.Shared._Crescent.ShipShields;
 using Robust.Shared.Physics.Collision.Shapes;
+using Content.Client.Station; // StationSystem (client)
+using Content.Shared._NF.Shuttles.Events; // InertiaDampeningMode
 
 namespace Content.Client.Shuttles.UI;
 
@@ -503,7 +505,7 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         var rawBlips = _blips.GetCurrentBlips();
 
         // Prepare view bounds for culling
-        var blipViewBounds = new Box2(-3f, -3f, Size.X + 3f, Size.Y + 3f);
+    var blipViewBounds = new Box2(-3f, -3f, Size.X + 3f, Size.Y + 3f);
 
         // Draw blips using the same grid-relative transformation approach as docks
         foreach (var blip in rawBlips)
@@ -511,9 +513,9 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var blipPosInView = Vector2.Transform(_transform.ToMapCoordinates(blip.Position).Position, worldToShuttle * shuttleToView);
 
             // Check if this blip is within view bounds before drawing
-            if (monoViewBounds.Contains(blipPosInView))
+            if (blipViewBounds.Contains(blipPosInView))
             {
-                    DrawBlipShape(handle, blipPosInView, blip.Scale * 3f, blip.Color.WithAlpha(0.8f), blip.Shape);
+                DrawBlipShape(handle, blipPosInView, blip.Scale * 3f, blip.Color.WithAlpha(0.8f), blip.Shape);
             }
         }
 
@@ -525,7 +527,7 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             var endPosInView = Vector2.Transform(line.End, worldToShuttle * shuttleToView);
 
             // Only draw lines if at least one endpoint is within view
-            if (monoViewBounds.Contains(startPosInView) || monoViewBounds.Contains(endPosInView))
+            if (blipViewBounds.Contains(startPosInView) || blipViewBounds.Contains(endPosInView))
             {
                 // Draw the line with the specified thickness and color
                 handle.DrawLine(startPosInView, endPosInView, line.Color);
@@ -549,7 +551,6 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         }
 
         ClearShader(handle);
-        #endregion
     }
 
     private void DrawBlipShape(DrawingHandleScreen handle, Vector2 position, float size, Color color, RadarBlipShape shape)
@@ -652,11 +653,11 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
         if (!ShowDocks)
             return;
 
-        const float DockScale = 0.6f;
+        var dockScale = 0.6f;
         var nent = EntManager.GetNetEntity(uid);
 
         const float sqrt2 = 1.41421356f;
-        const float dockRadius = DockScale * sqrt2;
+        var dockRadius = dockScale * sqrt2;
         // Worst-case bounds used to cull a dock:
         Box2 viewBounds = new Box2(
             -dockRadius * UIScale,
@@ -681,10 +682,10 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
 
                 var verts = new[]
                 {
-                    Vector2.Transform(position + new Vector2(-DockScale, -DockScale), gridToView),
-                    Vector2.Transform(position + new Vector2(DockScale, -DockScale), gridToView),
-                    Vector2.Transform(position + new Vector2(DockScale, DockScale), gridToView),
-                    Vector2.Transform(position + new Vector2(-DockScale, DockScale), gridToView),
+                    Vector2.Transform(position + new Vector2(-dockScale, -dockScale), gridToView),
+                    Vector2.Transform(position + new Vector2(dockScale, -dockScale), gridToView),
+                    Vector2.Transform(position + new Vector2(dockScale, dockScale), gridToView),
+                    Vector2.Transform(position + new Vector2(-dockScale, dockScale), gridToView),
                 };
 
                 handle.DrawPrimitives(DrawPrimitiveTopology.TriangleFan, verts, color.WithAlpha(0.8f));
@@ -748,7 +749,7 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
             if (shieldFixture == null || shieldFixture.Shape is not ChainShape)
                 continue;
 
-            ChainShape chain = (ChainShape) shieldFixture.Shape;
+            var chain = (ChainShape)shieldFixture.Shape;
 
             var count = chain.Count;
             var verticies = chain.Vertices;
@@ -770,5 +771,79 @@ public sealed partial class ShuttleNavControl : BaseShuttleControl
                 handle.DrawLine(v1, v2, visuals.ShieldColor);
             }
         }
+    }
+
+    // Frontier helpers: IFF range filter and blip rendering utilities
+    private bool NFCheckShouldDrawIffRangeCondition(bool shouldDrawIff, Vector2 distance)
+    {
+        if (shouldDrawIff && MaximumIFFDistance >= 0.0f)
+        {
+            if (distance.Length() > MaximumIFFDistance)
+                shouldDrawIff = false;
+        }
+        return shouldDrawIff;
+    }
+
+    private static void NFAddBlipToList(List<BlipData> blipDataList, bool isOutsideRadarCircle, Vector2 uiPosition, int uiXCentre, int uiYCentre, Color color)
+    {
+        blipDataList.Add(new BlipData
+        {
+            IsOutsideRadarCircle = isOutsideRadarCircle,
+            UiPosition = uiPosition,
+            VectorToPosition = uiPosition - new Vector2(uiXCentre, uiYCentre),
+            Color = color
+        });
+    }
+
+    private void NFDrawBlips(DrawingHandleScreen handle, List<BlipData> blipDataList)
+    {
+        var byColor = new Dictionary<Color, List<Vector2>>();
+
+        foreach (var blip in blipDataList)
+        {
+            var tri = new[]
+            {
+                new Vector2(0, 0),
+                new Vector2(RadarBlipSize, 0),
+                new Vector2(RadarBlipSize * 0.5f, RadarBlipSize)
+            };
+
+            if (blip.IsOutsideRadarCircle)
+            {
+                var angle = MathF.Atan2(blip.VectorToPosition.Y, blip.VectorToPosition.X) - 1.6f;
+                var cos = MathF.Cos(angle);
+                var sin = MathF.Sin(angle);
+                for (var i = 0; i < tri.Length; i++)
+                {
+                    var v = tri[i];
+                    tri[i] = new Vector2(v.X * cos - v.Y * sin, v.X * sin + v.Y * cos);
+                }
+            }
+
+            var center = (tri[0] + tri[1] + tri[2]) / 3f;
+            var verts = new Vector2[3];
+            for (var i = 0; i < 3; i++)
+            {
+                var offset = (tri[i] - center) * UIScale;
+                verts[i] = blip.UiPosition * UIScale + offset;
+            }
+
+            if (!byColor.TryGetValue(blip.Color, out var list))
+            {
+                list = new List<Vector2>();
+                byColor[blip.Color] = list;
+            }
+            list.AddRange(verts);
+        }
+
+        foreach (var kvp in byColor)
+        {
+            handle.DrawPrimitives(DrawPrimitiveTopology.TriangleList, kvp.Value.ToArray(), kvp.Key);
+        }
+    }
+
+    private void ClearShader(DrawingHandleScreen handle)
+    {
+        // No-op placeholder: retained for compatibility with previous shader-based effects.
     }
 }

@@ -11,10 +11,12 @@ using Content.Shared.Interaction;
 using Content.Server.Shuttles.Components;
 using Content.Shared.Projectiles;
 using Robust.Server.GameObjects;
+using Robust.Shared.Physics.Components;
+using Robust.Shared.Physics.Systems;
 using Robust.Shared.Timing;
 using Robust.Shared.Utility;
 
-namespace Content.Server._Mono.Projectiles.TargetSeeking;
+namespace Content.Server.Mono.Projectiles.TargetSeeking;
 
 /// <summary>
 ///     Handles the logic for target-seeking projectiles.
@@ -23,7 +25,7 @@ public sealed class TargetSeekingSystem : EntitySystem
 {
     [Dependency] private readonly SharedTransformSystem _transform = null!;
     [Dependency] private readonly RotateToFaceSystem _rotateToFace = null!;
-    [Dependency] private readonly PhysicsSystem _physics = null!;
+    [Dependency] private readonly SharedPhysicsSystem _physics = null!;
     [Dependency] private readonly IGameTiming _gameTiming = default!; // Mono
 
     private EntityQuery<ProjectileComponent> _projectileQuery;
@@ -182,6 +184,9 @@ public sealed class TargetSeekingSystem : EntitySystem
             {
                 var target = seekingComp.CurrentTarget.Value;
                 if (!_physicsQuery.TryGetComponent(target, out var targetBody))
+                    continue;
+
+                if (!_physicsQuery.TryGetComponent(uid, out var body))
                     continue;
 
                 var targetXform = Transform(target);
