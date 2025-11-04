@@ -560,6 +560,9 @@
     - S2Mechs
     - SpaceMechaWeapons
     - S2MechBoards
+    # Hardlight Change
+    - BorgArmorEnergy
+    - BorgArmorPhys
   - type: MaterialStorage
     whitelist:
       tags:
