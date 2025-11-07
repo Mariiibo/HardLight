@@ -23,9 +23,7 @@
   id: GenitalMarkings
   priority: 4
 
-- type: consentToggle
-  id: Aphrodisiacs
-  priority: 5
+## Note: 'Aphrodisiacs' toggle is defined in _HL/Consent/aphrodisiacs.yml with name/description.
 
 - type: consentToggle
   id: Cum

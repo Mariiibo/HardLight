@@ -35,14 +35,11 @@
     LFoot: MobResomiLFoot
     RFoot: MobResomiRFoot
     Tail: MobHumanoidAnyMarking
-    TailBehind: MobHumanoidAnyMarking
-    TailOversuit: MobHumanoidAnyMarking
+  # TailBehind removed (unsupported enum); TailOversuit removed.
     UndergarmentTop: MobHumanoidAnyMarking
     UndergarmentBottom: MobHumanoidAnyMarking
     Genital: MobHumanoidAnyMarking
-    Penis: MobHumanoidAnyMarking
-    UndershirtUnderclothes: MobHumanoidAnyMarking
-    UndershirtOverclothes: MobHumanoidAnyMarking
+  # Unsupported layers removed: Penis / UndershirtUnderclothes / UndershirtOverclothes
 
 - type: markingPoints
   id: MobResomiMarkingLimits
