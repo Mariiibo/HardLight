@@ -82,7 +82,7 @@ public sealed class HideLayerClothingSystem : EntitySystem
         {
             foreach (var layer in slots)
             {
-                if (hideable.Contains(layer) && layer != HumanoidVisualLayers.Genital)
+                if (hideable.Contains(layer) || layer == HumanoidVisualLayers.Genital)
                     _humanoid.SetLayerVisibility(user!, layer, !hideLayers, inSlot, ref dirty);
             }
         }
