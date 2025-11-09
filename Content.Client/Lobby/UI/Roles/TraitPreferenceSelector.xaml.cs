@@ -89,40 +89,6 @@ public sealed partial class TraitPreferenceSelector : Control
         };
     }
 
-    public void SetUnavailable(bool unavailable)
-    {
-        if (unavailable)
-        {
-            TraitButton.Disabled = true;
-            TraitButton.ModulateSelfOverride = Color.Gray.WithAlpha(0.5f);
-        }
-        else
-        {
-            TraitButton.Disabled = false;
-            TraitButton.ModulateSelfOverride = null;
-        }
-    }
-
-    private void OnTraitButtonPressed(BaseButton.ButtonEventArgs args)
-    {
-        Checkbox.Pressed = !Checkbox.Pressed;
-        PreferenceChanged?.Invoke(Preference);
-        UpdateButtonState();
-    }
-
-    private void UpdateButtonState()
-    {
-        // Visual feedback for selection
-        if (Checkbox.Pressed)
-        {
-            TraitButton.ModulateSelfOverride = Color.LightGreen.WithAlpha(0.3f);
-        }
-        else if (TraitButton.ModulateSelfOverride != Color.Gray.WithAlpha(0.5f))
-        {
-            TraitButton.ModulateSelfOverride = null;
-        }
-    }
-
     private void OnTraitButtonPressed(BaseButton.ButtonEventArgs args)
     {
         // Clicking the trait button toggles selection

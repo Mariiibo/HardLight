@@ -735,8 +735,6 @@ namespace Content.Client.Lobby.UI
                 TraitCategoryPrototype? category = null;
                 string categoryName;
                 int? maxTraitPoints = null;
-                string categoryName;
-                int? maxTraitPoints = null;
 
                 if (categoryId != TraitCategoryPrototype.Default)
                 {
@@ -843,38 +841,7 @@ namespace Content.Client.Lobby.UI
                             }
 
                             var oldProfile = Profile;
-                            // Calculate current points for this category before adding the new trait
-                            var currentPoints = 0;
-                            if (category != null && category.MaxTraitPoints >= 0)
-                            {
-                                foreach (var existingTraitId in Profile?.TraitPreferences ?? new HashSet<ProtoId<TraitPrototype>>())
-                                {
-                                    if (!_prototypeManager.TryIndex<TraitPrototype>(existingTraitId, out var existingProto))
-                                        continue;
-
-                                    if (existingProto.Category == categoryId)
-                                        currentPoints += existingProto.Cost;
-                                }
-
-                                // Check if adding this trait would exceed the maximum points
-                                if (currentPoints + trait.Cost > category.MaxTraitPoints)
-                                {
-                                    // Reset the selection without triggering the event
-                                    selector.Preference = false;
-                                    return;
-                                }
-                            }
-
-                            var oldProfile = Profile;
                             Profile = Profile?.WithTraitPreference(trait.ID, _prototypeManager);
-
-                            // If the profile didn't change, it means the trait couldn't be added (e.g., due to point limits)
-                            if (Profile == oldProfile)
-                            {
-                                // Reset the selection without triggering the event
-                                selector.Preference = false;
-                                return;
-                            }
 
                             // If the profile didn't change, it means the trait couldn't be added (e.g., due to point limits)
                             if (Profile == oldProfile)
