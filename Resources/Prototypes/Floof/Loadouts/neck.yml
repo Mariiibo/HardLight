@@ -28,8 +28,8 @@
     neck: ClothingNeckCollarEpi
     
 - type: loadout # HL - Moved to T1
-  id: FloofClothingCollarMed # DocNeck TODO: additional integration - BrigmedicNeck?
-effects:
+  id: FloofClothingCollarMed #ContractorNeck
+  effects:
   - !type:GroupLoadoutEffect
     proto: ContractorT1
   price: 500
