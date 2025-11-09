@@ -783,7 +783,7 @@
     maxIntensity: 40
     intensitySlope: 6
     totalIntensity: 200
-    maxTileBreak: 1
+    maxTileBreak: 0
   - type: PointLight
     radius: 3.5
     color: orange
@@ -805,7 +805,7 @@
     maxIntensity: 2 # max 30 per tile
     intensitySlope: 1
     totalIntensity: 4 # 60 total damage to distribute over tiles
-    maxTileBreak: 1
+    maxTileBreak: 0
   - type: PointLight
     radius: 3.5
     color: orange
@@ -847,6 +847,7 @@
     totalIntensity: 150 # a ~2 tile radius
     intensitySlope: 5
     maxIntensity: 10
+    maxTileBreak: 0
 
 - type: entity
   id: Bullet40mmGrenadeFlash
@@ -901,6 +902,7 @@
     totalIntensity: 175 # about a ~6 tile radius
     intensitySlope: 1
     maxIntensity: 10
+    maxTileBreak: 0
 
 - type: entity
   id: Bullet40mmGrenadeEMP

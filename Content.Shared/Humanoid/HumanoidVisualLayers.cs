@@ -7,14 +7,14 @@ namespace Content.Shared.Humanoid
     public enum HumanoidVisualLayers : byte
     {
         Special, // for the cat ears
+        Genital,
+        Penis,
+        Breasts, // HL: Add breasts layer
         Tail,
         Hair,
         FacialHair,
         UndergarmentTop,
         UndergarmentBottom,
-        Genital,
-        Penis,
-        Breasts, // HL: Add breasts layer
         Chest,
         Head,
         Snout,
