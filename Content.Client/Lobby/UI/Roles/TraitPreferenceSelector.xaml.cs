@@ -18,6 +18,11 @@ namespace Content.Client.Lobby.UI.Roles;
 public sealed partial class TraitPreferenceSelector : Control
 {
     public int Cost;
+    public bool Visible
+    {
+        get => Container.Visible;
+        set => Container.Visible = value;
+    }
 
     public bool Preference
     {
@@ -70,15 +75,49 @@ public sealed partial class TraitPreferenceSelector : Control
         UpdateButtonState();
     }
 
-        public void SetTooltip(string tooltip)
+    public void SetTooltip(string tooltip)
+    {
+        TraitButton.TooltipSupplier = _ =>
         {
-            TraitButton.TooltipSupplier = _ =>
-            {
-                var tip = new Robust.Client.UserInterface.CustomControls.Tooltip();
-                tip.SetMessage(FormattedMessage.FromMarkupPermissive(tooltip));
-                return tip;
-            };
+            var tip = new Robust.Client.UserInterface.CustomControls.Tooltip();
+            tip.SetMessage(FormattedMessage.FromMarkupPermissive(tooltip));
+            return tip;
+        };
+    }
+
+    public void SetUnavailable(bool unavailable)
+    {
+        if (unavailable)
+        {
+            TraitButton.Disabled = true;
+            TraitButton.ModulateSelfOverride = Color.Gray.WithAlpha(0.5f);
         }
+        else
+        {
+            TraitButton.Disabled = false;
+            TraitButton.ModulateSelfOverride = null;
+        }
+    }
+
+    private void OnTraitButtonPressed(BaseButton.ButtonEventArgs args)
+    {
+        Checkbox.Pressed = !Checkbox.Pressed;
+        PreferenceChanged?.Invoke(Preference);
+        UpdateButtonState();
+    }
+
+    private void UpdateButtonState()
+    {
+        // Visual feedback for selection
+        if (Checkbox.Pressed)
+        {
+            TraitButton.ModulateSelfOverride = Color.LightGreen.WithAlpha(0.3f);
+        }
+        else if (TraitButton.ModulateSelfOverride != Color.Gray.WithAlpha(0.5f))
+        {
+            TraitButton.ModulateSelfOverride = null;
+        }
+    }
 
     private void OnCheckBoxToggled(BaseButton.ButtonToggledEventArgs args)
     {

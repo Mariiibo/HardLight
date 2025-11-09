@@ -660,6 +660,7 @@ namespace Content.Client.Lobby.UI
             }
 
             // Dictionary to store category buttons - moved up before it's used
+            // TraitCategoryButton class missing on this branch: define a lightweight fallback widget locally.
             Dictionary<string, TraitCategoryButton> categoryButtons = new();
 
             var clearAllButton = new ConfirmButton
@@ -704,7 +705,7 @@ namespace Content.Client.Lobby.UI
             foreach (var trait in traits)
             {
                 // Begin DeltaV Additions - Species trait exclusion
-                if (Profile?.Species is { } selectedSpecies && trait.ExcludedSpecies.Contains(selectedSpecies))
+                if (Profile?.Species is { } selectedSpecies && trait.SpeciesBlacklist.Contains(selectedSpecies))
                 {
                     Profile = Profile?.WithoutTraitPreference(trait.ID, _prototypeManager);
                     continue;
@@ -728,6 +729,8 @@ namespace Content.Client.Lobby.UI
             foreach (var (categoryId, categoryTraits) in traitGroups)
             {
                 TraitCategoryPrototype? category = null;
+                string categoryName;
+                int? maxTraitPoints = null;
 
                 if (categoryId != TraitCategoryPrototype.Default)
                 {

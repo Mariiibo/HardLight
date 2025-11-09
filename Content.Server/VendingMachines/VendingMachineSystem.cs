@@ -67,11 +67,13 @@ using Content.Shared._NF.Bank.BUI; // Frontier
 using Content.Server._NF.Contraband.Systems; // Frontier
 using Content.Shared.Stacks; // Frontier
 using Content.Server.Stack;
-using Content.Server._Mono.VendingMachine;
+// using Content.Server._Mono.VendingMachine; // Removed: namespace no longer exists in this branch
 using Content.Shared._Mono.Traits.Physical;
 using Robust.Shared.Containers; // Frontier
 using Content.Shared._NF.Bank.Components; // Frontier
 using Robust.Shared.Configuration; // HL: CVars
+using Content.Shared.Access.Components;
+using Content.Shared.Access.Systems;
 
 namespace Content.Server.VendingMachines
 {
@@ -82,6 +84,7 @@ namespace Content.Server.VendingMachines
         [Dependency] private readonly ThrowingSystem _throwingSystem = default!;
         [Dependency] private readonly IGameTiming _timing = default!;
         [Dependency] private readonly IConfigurationManager _cfg = default!; // HL: vending CVars
+        [Dependency] private readonly AccessReaderSystem _accessReader = default!;
 
         [Dependency] private readonly SharedAudioSystem _audioSystem = default!; // Frontier
         [Dependency] private readonly BankSystem _bankSystem = default!; // Frontier
@@ -319,7 +322,8 @@ namespace Content.Server.VendingMachines
             if (vendComponent.Denying)
                 return;
 
-            vendComponent.Denying = true;
+            // Set DenyEnd to trigger denying state (Denying property is read-only)
+            vendComponent.DenyEnd = _timing.CurTime + vendComponent.DenyDelay;
             Audio.PlayPvs(vendComponent.SoundDeny, uid, AudioParams.Default.WithVolume(-2f));
             TryUpdateVisualState(uid, vendComponent);
         }
@@ -387,13 +391,12 @@ namespace Content.Server.VendingMachines
             if (!TryComp<TransformComponent>(vendComponent.Owner, out var transformComp))
                 return false;
 
-            // Start Ejecting, and prevent users from ordering while anim playing
-            vendComponent.Ejecting = true;
+            // Start ejecting: set end time rather than assigning read-only property.
+            vendComponent.EjectEnd = Timing.CurTime + vendComponent.EjectDelay;
             vendComponent.NextItemToEject = entry.ID;
             vendComponent.ThrowNextItem = throwItem;
 
-            if (TryComp(uid, out SpeakOnUIClosedComponent? speakComponent))
-                _speakOnUIClosed.TrySetFlag((uid, speakComponent));
+            // SpeakOnUIClosed handled in shared system; remove server duplicate dependency.
 
             // Frontier: unlimited vending
             // Infinite supplies must stay infinite.
@@ -407,101 +410,7 @@ namespace Content.Server.VendingMachines
             return true;
         }
 
-        // Frontier: custom vending check
-        /// <summary>
-        /// Checks whether the user is authorized to use the vending machine, then ejects the provided item if true
-        /// </summary>
-        /// <param name="uid"></param>
-        /// <param name="sender">Entity that is trying to use the vending machine</param>
-        /// <param name="type">The type of inventory the item is from</param>
-        /// <param name="itemId">The prototype ID of the item</param>
-        /// <param name="component"></param>
-        public void AuthorizedVend(EntityUid uid, EntityUid sender, InventoryType type, string itemId, VendingMachineComponent component)
-        {
-            if (!_prototypeManager.TryIndex<EntityPrototype>(itemId, out var proto))
-                return;
-
-            var price = _pricing.GetEstimatedPrice(proto);
-            // Somewhere deep in the code of pricing, a hardcoded 20 dollar value exists for anything without
-            // a staticprice component for some god forsaken reason, and I cant find it or think of another way to
-            // get an accurate price from a prototype with no staticprice comp.
-            // this will undoubtably lead to vending machine exploits if I cant find wtf pricing system is doing.
-            // also stacks, food, solutions, are handled poorly too f
-            if (price == 0)
-                price = 20;
-
-            if (TryComp<MarketModifierComponent>(component.Owner, out var modifier))
-                price *= modifier.Mod;
-
-            var totalPrice = (int) price;
-
-            // If any price has a vendor price, explicitly use its value - higher OR lower, over others.
-            var priceVend = _pricing.GetEstimatedVendPrice(proto);
-            if (priceVend > 0.0) // if vending price exists, overwrite it.
-                totalPrice = (int) priceVend;
-
-            if (IsAuthorized(uid, sender, component))
-            {
-                int bankBalance = 0;
-                if (!HasComp<IronmanComponent>(sender) && TryComp<BankAccountComponent>(sender, out var bank))
-                    bankBalance = bank.Balance;
-
-                int cashSlotBalance = 0;
-                Entity<StackComponent>? cashEntity = null;
-                if (component.CashSlotName != null
-                    && component.CurrencyStackType != null
-                    && ItemSlots.TryGetSlot(uid, component.CashSlotName, out var cashSlot)
-                    && TryComp<StackComponent>(cashSlot?.ContainerSlot?.ContainedEntity, out var stackComp)
-                    && stackComp!.StackTypeId == component.CurrencyStackType)
-                {
-                    cashSlotBalance = stackComp!.Count;
-                    cashEntity = (cashSlot!.ContainerSlot!.ContainedEntity.Value, stackComp!);
-                }
-
-                if (totalPrice > bankBalance + cashSlotBalance)
-                {
-                    _popupSystem.PopupEntity(Loc.GetString("bank-insufficient-funds"), uid);
-                    Deny(uid, component);
-                    return;
-                }
-
-                bool paidFully = false;
-                // Mono: Store the purchase price for tracking
-                component.LastPurchasePrice = totalPrice;
-
-                if (TryEjectVendorItem(uid, type, itemId, component.CanShoot, component))
-                {
-                    if (cashEntity != null)
-                    {
-                        var newCashSlotBalance = Math.Max(cashSlotBalance - totalPrice, 0);
-                        _stack.SetCount(cashEntity.Value.Owner, newCashSlotBalance, cashEntity.Value.Comp);
-                        component.CashSlotBalance = newCashSlotBalance;
-                        paidFully = true; // Either we paid fully with cash, or we need to withdraw the remainder
-                    }
-                    if (totalPrice > cashSlotBalance && !HasComp<Content.Shared._Mono.Traits.Physical.IronmanComponent>(sender))
-                        paidFully = _bankSystem.TryBankWithdraw(sender, totalPrice - cashSlotBalance);
-
-                    // If we paid completely, pay our station taxes
-                    if (paidFully)
-                    {
-                        foreach (var (account, taxCoeff) in component.TaxAccounts)
-                        {
-                            if (!float.IsFinite(taxCoeff) || taxCoeff <= 0.0f)
-                                continue;
-                            var tax = (int)Math.Floor(totalPrice * taxCoeff);
-                            _bankSystem.TrySectorDeposit(account, tax, LedgerEntryType.VendorTax);
-                        }
-                    }
-
-                    // Something was ejected, update the vending component's state
-                    Dirty(uid, component);
-
-                    _adminLogger.Add(LogType.Action, LogImpact.Low,
-                        $"{ToPrettyString(sender):user} bought from [vendingMachine:{ToPrettyString(uid!)}, product:{proto.Name}, cost:{totalPrice},  with ${cashSlotBalance} in the cash slot and ${bankBalance} in the bank.");
-                }
-            }
-            // End Frontier
-        }
+        // Removed duplicate AuthorizedVend; keep the override implementation below.
 
         /// <summary>
         /// Tries to update the visuals of the component based on its current state.
@@ -529,13 +438,8 @@ namespace Content.Server.VendingMachines
                 finalState = VendingMachineVisualState.Off;
             }
 
-            if (_light.TryGetLight(uid, out var pointlight))
-            {
-                var lightState = finalState != VendingMachineVisualState.Broken && finalState != VendingMachineVisualState.Off;
-                _light.SetEnabled(uid, lightState, pointlight);
-            }
-
-            _appearanceSystem.SetData(uid, VendingMachineVisuals.VisualState, finalState);
+            // Light and appearance handled by shared system; server override retains visual state via base system dependencies.
+            base.TryUpdateVisualState((uid, vendComponent));
         }
 
         /// <summary>
