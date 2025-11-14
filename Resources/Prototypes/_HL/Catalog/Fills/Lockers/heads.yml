@@ -409,7 +409,7 @@
 # No hardsuit locker
 - type: entity
   id: HLLockerHeadOfSecurityFilled
-  suffix: Filled, HL
+  suffix: Station, Filled
   parent: HLLockerHeadOfSecurity
   components:
   - type: EntityTableContainerFill
@@ -420,7 +420,7 @@
 # No hardsuit + Hardsuit locker
 - type: entity
   id: HLLockerHeadOfSecurityFilledHardsuit
-  suffix: Filled, Hardsuit, HL
+  suffix: Station, Filled, Hardsuit
   parent: HLLockerHeadOfSecurity
   components:
   - type: EntityTableContainerFill
