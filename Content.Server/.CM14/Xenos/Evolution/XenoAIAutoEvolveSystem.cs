@@ -63,23 +63,14 @@ public sealed class XenoAIAutoEvolveSystem : EntitySystem
                 continue;
             }
 
-                Log.Debug($"[XenoAI] {ToPrettyString(uid)} - Action cooldown remaining: {timeRemaining.TotalSeconds:F1}s");
             var cooldown = _actions.GetCooldown(xeno.EvolveAction.Value);
             if (cooldown.HasValue)
             {
                 var timeRemaining = cooldown.Value.End - curTime;
                 Log.Debug($"[XenoAI] {ToPrettyString(uid)} - Action cooldown remaining: {timeRemaining.TotalSeconds:F1}s");
-
-                Log.Debug($"[XenoAI] {ToPrettyString(uid)} - No cooldown on evolve action");
-                    continue;
+                continue;
             }
             Log.Info($"[XenoAI] Triggering evolution for {ToPrettyString(uid)}");
-            {
-                Log.Debug($"[XenoAI] {ToPrettyString(uid)} - No cooldown on evolve action");
-            }
-
-            Log.Info($"[XenoAI] Triggering evolution for {ToPrettyString(uid)}");
-
             // Trigger the evolution action
             var ev = new XenoOpenEvolutionsEvent();
             RaiseLocalEvent(uid, ev);
