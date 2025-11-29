@@ -113,7 +113,7 @@
   conflicts:
   - DetestSilicons
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -158,7 +158,7 @@
   conflicts:
   - DontSpeakToCommand
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -330,7 +330,7 @@
   moodName: thaven-mood-imposter-syndrome-name
   moodDesc: thaven-mood-imposter-syndrome-desc
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -343,7 +343,7 @@
   conflicts:
   - Centrist
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -356,7 +356,7 @@
   conflicts:
   - YesMan
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -370,7 +370,7 @@
   - StationIsAlive
   jobConflicts: # conflicts with everyone except Civilian and Specific (boxer, zookeeper)
   - Cargo
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Engineering

@@ -55,7 +55,7 @@
   - CompulsiveBeliever
   - Oathbound
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -120,7 +120,7 @@
   moodName: thaven-mood-outlaw-name
   moodDesc: thaven-mood-outlaw-desc
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -141,7 +141,7 @@
   moodName: thaven-mood-lone-actor-name
   moodDesc: thaven-mood-lone-actor-desc
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -163,7 +163,7 @@
   - Pope
   - SpeechRestriction
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
   - Security
@@ -219,7 +219,7 @@
   moodName: thaven-mood-stay-dead-name
   moodDesc: thaven-mood-stay-dead-desc
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -304,7 +304,7 @@
   moodDesc: thaven-mood-new-job-desc
   conflicts:
   - YourDepartmentOnly
-  
+
 # You hate to address anyone who is of a lower rank than you, and will only speak to them in private if absolutely necessary.
 - type: thavenMood
   id: RankSnob
@@ -321,7 +321,7 @@
   conflicts:
   - NeverAlone
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -331,7 +331,7 @@
   moodName: thaven-mood-corporateconspiracy-name
   moodDesc: thaven-mood-corporateconspiracy-desc
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -340,7 +340,7 @@
   id: OppositeDay
   moodName: thaven-mood-oppositeday-name
   moodDesc: thaven-mood-oppositeday-desc
-  
+
 # [NUMBER] is sacred to you. You must endeavor to only handle stackable items and chemicals in quantities of [NUMBER].
 #- type: thavenMood
 #  id: NumberGood

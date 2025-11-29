@@ -161,14 +161,14 @@
           types:
             Poison:
               1
-      conditions: #imp
-      - !type:OrganType #imp, thaven can breathe all gases safely
+    conditions: #imp
+    - !type:OrganType #imp, thaven can breathe all gases safely
+      type: Thaven
+      shouldHave: false
+    - !type:Oxygenate #imp, thaven can breathe all gases safely
+      conditions:
+      - !type:OrganType
         type: Thaven
-        shouldHave: false
-      - !type:Oxygenate #imp, thaven can breathe all gases safely
-        conditions:
-        - !type:OrganType
-          type: Thaven
       # We need a metabolism effect on reagent removal
       - !type:AdjustAlert
         alertType: Toxins

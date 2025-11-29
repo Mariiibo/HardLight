@@ -67,7 +67,7 @@
   moodDesc: thaven-mood-no-modern-medicine-desc
   jobConflicts:
   - Medical
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -88,7 +88,7 @@
   - OnlySpeakToCommand
   - MostImportant
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -160,7 +160,7 @@
   conflicts:
   - RadioOnly
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
@@ -184,7 +184,7 @@
   moodName: thaven-mood-tool-license-name
   moodDesc: thaven-mood-tool-license-desc
   jobConflicts:
-  - CentralCommandSpecial
+  - Frontier
   - CentralCommand
   - Command
 
