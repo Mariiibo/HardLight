@@ -15,8 +15,6 @@ namespace Content.IntegrationTests.Tests.Destructible
     [TestOf(typeof(AndTrigger))]
     public sealed class DestructibleDamageGroupTest
     {
-        private static readonly ProtoId<DamageGroupPrototype> TestBruteId = "TestBrute";
-        private static readonly ProtoId<DamageGroupPrototype> TestBurnId = "TestBurn";
         [Test]
         public async Task AndTest()
         {
@@ -56,8 +54,8 @@ namespace Content.IntegrationTests.Tests.Destructible
 
             await server.WaitAssertion(() =>
             {
-                var bruteDamageGroup = sPrototypeManager.Index<DamageGroupPrototype>(TestBruteId);
-                var burnDamageGroup = sPrototypeManager.Index<DamageGroupPrototype>(TestBurnId);
+                var bruteDamageGroup = sPrototypeManager.Index<DamageGroupPrototype>("TestBrute");
+                var burnDamageGroup = sPrototypeManager.Index<DamageGroupPrototype>("TestBurn");
 
                 DamageSpecifier bruteDamage = new(bruteDamageGroup, FixedPoint2.New(5));
                 DamageSpecifier burnDamage = new(burnDamageGroup, FixedPoint2.New(5));

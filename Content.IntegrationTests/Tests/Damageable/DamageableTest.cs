@@ -128,18 +128,16 @@ namespace Content.IntegrationTests.Tests.Damageable
                 sDamageableComponent = sEntityManager.GetComponent<DamageableComponent>(sDamageableEntity);
                 sDamageableSystem = sEntitySystemManager.GetEntitySystem<DamageableSystem>();
 
+                group1 = sPrototypeManager.Index<DamageGroupPrototype>("TestGroup1");
+                group2 = sPrototypeManager.Index<DamageGroupPrototype>("TestGroup2");
+                group3 = sPrototypeManager.Index<DamageGroupPrototype>("TestGroup3");
 
-
-                group1 = sPrototypeManager.Index<DamageGroupPrototype>(TestGroup1Id);
-                group2 = sPrototypeManager.Index<DamageGroupPrototype>(TestGroup2Id);
-                group3 = sPrototypeManager.Index<DamageGroupPrototype>(TestGroup3Id);
-
-                type1 = sPrototypeManager.Index<DamageTypePrototype>(TestDamage1Id);
-                type2a = sPrototypeManager.Index<DamageTypePrototype>(TestDamage2aId);
-                type2b = sPrototypeManager.Index<DamageTypePrototype>(TestDamage2bId);
-                type3a = sPrototypeManager.Index<DamageTypePrototype>(TestDamage3aId);
-                type3b = sPrototypeManager.Index<DamageTypePrototype>(TestDamage3bId);
-                type3c = sPrototypeManager.Index<DamageTypePrototype>(TestDamage3cId);
+                type1 = sPrototypeManager.Index<DamageTypePrototype>("TestDamage1");
+                type2a = sPrototypeManager.Index<DamageTypePrototype>("TestDamage2a");
+                type2b = sPrototypeManager.Index<DamageTypePrototype>("TestDamage2b");
+                type3a = sPrototypeManager.Index<DamageTypePrototype>("TestDamage3a");
+                type3b = sPrototypeManager.Index<DamageTypePrototype>("TestDamage3b");
+                type3c = sPrototypeManager.Index<DamageTypePrototype>("TestDamage3c");
             });
 
             await server.WaitRunTicks(5);
