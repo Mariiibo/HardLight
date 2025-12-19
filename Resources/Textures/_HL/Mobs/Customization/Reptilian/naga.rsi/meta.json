@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "license": null,
+  "copyright": null,
+  "size": {
+    "x": 64,
+    "y": 32
+  },
+  "states": [
+    {
+      "name": "naga_primary",
+      "directions": 4
+    },
+    {
+      "name": "naga_secondary",
+      "directions": 4
+    },
+    {
+      "name": "naga_striped_primary",
+      "directions": 4
+    },
+    {
+      "name": "naga_striped_secondary",
+      "directions": 4
+    },
+    {
+      "name": "naga_striped_tertiary",
+      "directions": 4
+    },
+    {
+      "name": "naga_rattlesnake_primary",
+      "directions": 4
+    },
+    {
+      "name": "naga_rattlesnake_secondary",
+      "directions": 4
+    },
+    {
+      "name": "naga_rattlesnake_tertiary",
+      "directions": 4
+    }
+  ]
+}
