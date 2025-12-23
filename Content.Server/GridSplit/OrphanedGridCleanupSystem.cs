@@ -65,8 +65,6 @@ public sealed class OrphanedGridCleanupSystem : EntitySystem
     {
         base.Initialize();
         SubscribeLocalEvent<GridSplitEvent>(OnGridSplit);
-        SubscribeLocalEvent<MapGridComponent, ComponentInit>(OnGridInit);
-        SubscribeLocalEvent<MapGridComponent, ComponentRemove>(OnGridRemove);
 
         // Register CVars
         _cfg.OnValueChanged(CCVars.OrphanedGridCleanupEnabled, v => _enabled = v, true);
@@ -85,18 +83,6 @@ public sealed class OrphanedGridCleanupSystem : EntitySystem
         _cfg.UnsubValueChanged(CCVars.EmptyGridCleanupEnabled, v => _emptyGridCleanupEnabled = v);
         _cfg.UnsubValueChanged(CCVars.EmptyGridCleanupInterval, v => _emptyGridCleanupInterval = v);
         _cfg.UnsubValueChanged(CCVars.EmptyGridCleanupMinAge, v => _emptyGridMinAge = v);
-    }
-
-    private void OnGridInit(EntityUid uid, MapGridComponent component, ComponentInit args)
-    {
-        // Track when this grid was created for age-based cleanup
-        _gridSpawnTimes[uid] = _timing.CurTime;
-    }
-
-    private void OnGridRemove(EntityUid uid, MapGridComponent component, ComponentRemove args)
-    {
-        // Clean up tracking when grid is removed
-        _gridSpawnTimes.Remove(uid);
     }
 
     public override void Update(float frameTime)
@@ -122,9 +108,14 @@ public sealed class OrphanedGridCleanupSystem : EntitySystem
     {
         var gridsToDelete = new List<EntityUid>();
 
+        // Track which grids we've seen this cycle to prune stale entries
+        var seenGrids = new HashSet<EntityUid>();
+
         var query = EntityQueryEnumerator<MapGridComponent, MetaDataComponent, TransformComponent>();
         while (query.MoveNext(out var uid, out var grid, out var meta, out var xform))
         {
+            seenGrids.Add(uid);
+
             // Skip if not old enough
             if (!_gridSpawnTimes.TryGetValue(uid, out var spawnTime))
             {
@@ -144,11 +135,19 @@ public sealed class OrphanedGridCleanupSystem : EntitySystem
             }
         }
 
+        // Prune stale entries from grids that no longer exist
+        var staleGrids = _gridSpawnTimes.Keys.Where(uid => !seenGrids.Contains(uid)).ToList();
+        foreach (var staleUid in staleGrids)
+        {
+            _gridSpawnTimes.Remove(staleUid);
+        }
+
         // Delete the collected grids
         foreach (var gridUid in gridsToDelete)
         {
             Log.Info($"Deleting empty/nameless grid {ToPrettyString(gridUid)} during periodic cleanup");
             QueueDel(gridUid);
+            _gridSpawnTimes.Remove(gridUid);
         }
 
         if (gridsToDelete.Count > 0)
