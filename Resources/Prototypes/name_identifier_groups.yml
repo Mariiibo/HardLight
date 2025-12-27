@@ -31,7 +31,7 @@
 
 - type: nameIdentifierGroup
   id: Xenoborg
-  format: name-identifier-format-xenoborg
+  prefix: X
   minValue: 1000
   maxValue: 9999
 

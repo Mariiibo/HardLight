@@ -9,7 +9,7 @@
 - type: typingIndicator
   id: xenoborg
   typingState: xenoborg0
-  idleState: xenoborg3
+  #idleState: xenoborg3
 
 - type: typingIndicator
   id: alien
