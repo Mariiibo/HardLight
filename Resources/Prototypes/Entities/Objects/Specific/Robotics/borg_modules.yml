@@ -1330,6 +1330,7 @@
     - state: xenoborg_generic
     - state: icon-xenoborg-basic
   - type: ItemBorgModule
+    items: []
     hands:
     - item: DoorRemoteXenoborg
     - hand:
