@@ -11,3 +11,9 @@ Entries:
       message: Changelog test
   id: 2
   time: '2025-12-25T01:59:27.0000000+00:00'
+- author: NotLivyathan
+  changes:
+    - type: Add
+      message: Added a second tail point for moths and chitinids.
+  id: 3
+  time: '2025-12-27T02:54:30.0000000+00:00'
