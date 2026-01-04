@@ -113,3 +113,75 @@ Entries:
       message: Restored Maxim Hardsuit to Expedition loot tables
   id: 12
   time: '2025-12-31T16:45:51.0000000+00:00'
+- author: Fenndragon
+  changes:
+    - type: Add
+      message: Added Vore
+    - type: Add
+      message: Added kink list
+    - type: Fix
+      message: fixed round logic issues
+  id: 13
+  time: '2026-01-02T23:01:27.0000000+00:00'
+- author: pankakakas
+  changes: []
+  id: 14
+  time: '2026-01-03T01:26:41.0000000+00:00'
+- author: TrylobyteWasTaken
+  changes:
+    - type: Add
+      message: added the TraversalDistorter component to artifact analyzer
+    - type: Add
+      message: added the Window tag to shuttle windows
+    - type: Tweak
+      message: Syndicate FTL Interceptions and Syndicate Weapons Cache spawn
+    - type: Fix
+      message: Paramedic hoverbikes move again
+  id: 15
+  time: '2026-01-03T01:30:45.0000000+00:00'
+- author: Mariiibo
+  changes:
+    - type: Fix
+      message: Fixed a bunch of guidebook entry organization.
+  id: 16
+  time: '2026-01-03T01:34:17.0000000+00:00'
+- author: carccborg
+  changes:
+    - type: Tweak
+      message: Characters with the Numb trait no longer scream during surgery.
+  id: 17
+  time: '2026-01-03T01:39:17.0000000+00:00'
+- author: carccborg
+  changes:
+    - type: Fix
+      message: Falling asleep no longer makes you fall out of a chair or bed
+  id: 18
+  time: '2026-01-03T01:40:59.0000000+00:00'
+- author: Mariiibo
+  changes:
+    - type: Fix
+      message: Fixed the rest of the guidebook errors.
+  id: 19
+  time: '2026-01-03T18:11:58.0000000+00:00'
+- author: carccborg
+  changes:
+    - type: Tweak
+      message: >-
+        Reduced thruster plume damage from 1400 Heat per second to 140 Heat per
+        second.
+  id: 20
+  time: '2026-01-03T18:12:40.0000000+00:00'
+- author: pankakakas
+  changes:
+    - type: Fix
+      message: Avali Genital Markings Render!
+  id: 21
+  time: '2026-01-03T18:13:29.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Add
+      message: Rename TSFMC items to ColSec
+    - type: Add
+      message: Sensors to tracking implants
+  id: 22
+  time: '2026-01-04T04:34:22.0000000+00:00'
