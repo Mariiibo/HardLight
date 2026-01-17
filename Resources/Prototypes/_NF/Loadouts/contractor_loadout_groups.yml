@@ -404,7 +404,7 @@
   name: loadout-group-contractor-belt
   minLimit: 0
   loadouts:
-  - ContractorClothingBeltSecurityWebbingChameleon
+  #- ContractorClothingBeltSecurityWebbingChameleon
   - ContractorClothingBeltPlant
   - ContractorClothingBeltPlantFilled
   - ContractorClothingBeltChef
