@@ -557,3 +557,11 @@ Entries:
       message: Make sec shipyards report to security comms instead of colsec.
   id: 58
   time: '2026-01-19T03:53:29.0000000+00:00'
+- author: rtasva
+  changes:
+    - type: Add
+      message: Ported Silica Station
+    - type: Tweak
+      message: Added Silica to the map pool
+  id: 59
+  time: '2026-01-19T04:07:57.0000000+00:00'
