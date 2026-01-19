@@ -543,3 +543,9 @@ Entries:
       message: Stellibinin now acts like Dylovene when given to plants.
   id: 56
   time: '2026-01-19T01:41:13.0000000+00:00'
+- author: warcrazed11
+  changes:
+    - type: Fix
+      message: Fixed vox breathing.
+  id: 57
+  time: '2026-01-19T02:43:10.0000000+00:00'
