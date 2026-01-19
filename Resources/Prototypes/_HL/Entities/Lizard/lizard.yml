@@ -547,11 +547,11 @@
         Slash: 15
   - type: MovementSpeedModifier
     baseWalkSpeed: 4
-    baseSprintSpeed: 5.5
+    baseSprintSpeed: 7
   - type: SegmentedEntity
-    numberOfSegments: 5
+    numberOfSegments: 4
     initialRadius: 0.8
-    staticOffset: 2
+    staticOffset: 1.8
     staticScale: 0.9
     initialSegmentId: RedRainLizardInitialSegment
     segmentId: RedRainLizardSegment
