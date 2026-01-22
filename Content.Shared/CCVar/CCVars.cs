@@ -245,7 +245,7 @@ public sealed partial class CCVars : CVars
         CVarDef.Create("white.coalesce_identical_messages", true, CVar.CLIENT | CVar.ARCHIVE | CVar.REPLICATED); // WD EDIT
 
     public static readonly CVarDef<bool> TraitsPunishCheaters =
-            CVarDef.Create("game.traits_punish_cheaters", true, CVar.REPLICATED);
+            CVarDef.Create("game.traits_punish_cheaters", false, CVar.REPLICATED);
     #endregion
 
     #region Item Offering
