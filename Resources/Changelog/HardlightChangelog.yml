@@ -595,3 +595,11 @@ Entries:
       message: Added basic tag lock system for clothing.
   id: 64
   time: '2026-01-22T04:37:59.0000000+00:00'
+- author: fenndragon
+  changes:
+    - type: Add
+      message: >-
+        Added back the vore system, this time ported from Coyote and
+        floof-station
+  id: 65
+  time: '2026-01-22T04:38:15.0000000+00:00'
