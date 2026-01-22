@@ -583,3 +583,9 @@ Entries:
       message: Adds the Admin tag and tags admin items.
   id: 62
   time: '2026-01-19T20:36:14.0000000+00:00'
+- author: Tichi
+  changes:
+    - type: Fix
+      message: Leash fixes
+  id: 63
+  time: '2026-01-22T04:37:24.0000000+00:00'
