@@ -87,6 +87,7 @@
   - type: SiliconLawProvider
     laws: Qborg
   - type: LeashAnchor # Floofstation
+    kind: Intrinsic
   - type: InteractionPopup  # Hardlight change
     interactSuccessString: petting-success-generic-cyborg
     interactFailureString: petting-failure-generic-cyborg
