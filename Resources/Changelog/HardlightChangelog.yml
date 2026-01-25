@@ -719,3 +719,9 @@ Entries:
       message: ported too many clothes to list here
   id: 75
   time: '2026-01-25T09:27:51.0000000+00:00'
+- author: Generic_Eagle
+  changes:
+    - type: Fix
+      message: More improvements on Eaglerock
+  id: 76
+  time: '2026-01-25T09:29:37.0000000+00:00'
